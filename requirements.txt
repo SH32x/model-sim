@@ -3,3 +3,8 @@ numpy
 pandas
 pydeck
 streamlit
+plotly
+prophet
+scipy
+scikit-learn
+matplotlib
