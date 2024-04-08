@@ -259,16 +259,17 @@ try:
     if drop_list == 'Price Depiction':
         #test
         st.subheader("S&P 500 Time-Series Analysis")
-        # describe_data()
-        # plot_data()
+        
 
         plot_raw_data()
     
     if drop_list == 'Price Prediction':
         #Test
         st.subheader("S&P 500 Monte Carlo Prediction")
-        # predict_price()
-        # monte_carlo()
+        days = int(st.text_input('Days', 30))
+        future_days = int(st.text_input('Future Days', 5))
+        simulations = int(st.text_input('Simulation Count', 1000))
+        
         simulation_results = predict_stock_prices(df, days, simulations, future_days)
         plot_simulation_results(simulation_results)
 except ValueError:
