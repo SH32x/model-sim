@@ -34,7 +34,6 @@ LOGGER = get_logger(__name__)
 
 # Variables
 #Input parameter values
-input_date = '2024-04-05'
 days = 30
 future_days = 5
 simulations = 1000
@@ -62,7 +61,7 @@ df['Close'] = df['Close'].astype(float)
 
 #######################
 # Functions
-# Define a method to calculate the mean and 95% confidence interval highs and lows of the 30 days before each date
+# Calculates the mean and 95% confidence interval highs and lows of the 30 days before each date
 def calculate_stats(df):
     # Initialize the new columns with NaN values
     df['mean_close'] = np.nan
@@ -97,50 +96,23 @@ def calculate_stats(df):
     return df
 
 # Pre-run:
-# Calculate the stats and add them to the DataFrame
+# This is to initialize the dataframe with extra columns for mean, 95% CI high, 95% CI low
 df_with_stats = calculate_stats(df)
 
-# Define a method to get the closing price for a given date
-def get_closing_price(input_date):
-    # Convert input_date to datetime
-    input_date = pd.to_datetime(input_date)
-    
-    # Get the previous Friday's closing price
-    previous_friday = input_date - timedelta(days=(input_date.weekday() + 2) % 7)
-
-    # If the input date is a weekend, adjust to the previous Friday
-    if input_date.weekday() > 4:  # 5: Saturday, 6: Sunday
-        input_date -= timedelta(days=input_date.weekday() - 4)
-    
-    # Get the row with the closest date before or equal to the input date
-    row = df[df['Date'] <= input_date].iloc[-1]
-
-    
-    previous_friday_row = df[df['Date'] <= previous_friday].iloc[-1]
-    
-    # Return the closing price and the previous Friday's closing price
-    return row['Close'], previous_friday_row['Close']
-
-# Example usage:
-# Assuming the user wants the closing price for '2024-03-16' (which is a Saturday)
-#input_date = '2024-03-29'
-#closing_price, previous_friday_price = get_closing_price(input_date)
-#print(f"The closing price for {input_date} is {closing_price}")
-#print(f"The closing price for the previous Friday is {previous_friday_price}")
 
 def plot_raw_data():
-    # Plotting the raw data
+    
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df['Date'],
                   y=df['Close'], name="Closing Price", line=dict(color='firebrick', width=4)))
-    # Plotting the 30-day mean
+    
     fig.add_trace(go.Scatter(x=df['Date'], y=df['mean_close'], name="30-day Mean", line=dict(color='blue', width=2)))
 
-    # Plotting the confidence intervals
+   
     fig.add_trace(go.Scatter(x=df['Date'], y=df['ci_high'], name="95% CI High", line=dict(color='green', width=2, dash='dash')))
     fig.add_trace(go.Scatter(x=df['Date'], y=df['ci_low'], name="95% CI Low", line=dict(color='green', width=2, dash='dash')))
 
-    # Define buttons for custom range selection
+   
     yaxis_buttons = [
         dict(count=1, label="1m", step="month", stepmode="backward"),
         dict(count=1, label="YTD", step="year", stepmode="todate"),
@@ -148,7 +120,7 @@ def plot_raw_data():
         dict(step="all")
     ]
 
-    # Update layout to include y-axis range buttons
+    # Adjusts Y-axis
     fig.update_layout(
         title='S&P 500 Price with Mean, 95% CI',
         xaxis=dict(
@@ -200,11 +172,11 @@ def plot_raw_data():
         ]
     )
     fig.show()
-# plot_raw_data()
 
-# Predicts the prices using a Monte Carlo simulation
+
+# Predicts the prices using a Monte Carlo simulation, adjustable parameters
 def predict_stock_prices(df, days=30, simulations=1000, future_days=5):
-    # Calculate daily returns
+    # Calculate daily returns (% relative to past X days)
     daily_returns = df['Close'].iloc[-days:].pct_change().dropna()
 
     # Calculate the mean and standard deviation of daily returns
@@ -216,9 +188,9 @@ def predict_stock_prices(df, days=30, simulations=1000, future_days=5):
 
     # Run simulations
     for i in range(simulations):
-        # Generate simulated daily returns
+        # Generates simulated daily returns based on mean, SD
         simulated_returns = np.random.normal(mean_return, std_dev_return, future_days)
-        # Calculate the price path
+        # Calculate the price path (cumulative product)
         price_path = df['Close'].iloc[-1] * (1 + simulated_returns).cumprod()
         results[i, :] = price_path
 
@@ -226,10 +198,10 @@ def predict_stock_prices(df, days=30, simulations=1000, future_days=5):
 
 # Generates a histogram of likely price ranges
 def plot_simulation_results(simulation_results):
-    # Take the last day prices from each simulation
+    # Takes the last day prices from each simulation
     last_day_prices = simulation_results[:, -1]
-
     fig = go.Figure(data=[go.Histogram(x=last_day_prices, nbinsx=50)])
+    # Displays updated chart in the GUI
     fig.update_layout(
         title_text=f"Frequency of {simulations} Predicted Prices over the next {future_days} days",
         xaxis_title="Price",
@@ -237,15 +209,7 @@ def plot_simulation_results(simulation_results):
     )
     st.plotly_chart(fig)
     
-    # Plot a histogram of the last day prices
-    #plt.hist(last_day_prices, bins=50, alpha=0.75)
-    #plt.title(f"Frequency of {simulations} Predicted Prices over the next {future_days} days")
-    #plt.xlabel('Price')
-    #plt.ylabel('Frequency')
-    #plt.show()
-
-# simulation_results = predict_stock_prices(df, days, simulations, future_days)
-# plot_simulation_results(simulation_results)
+    
 #######################
 # Sidebar
 with st.sidebar:
