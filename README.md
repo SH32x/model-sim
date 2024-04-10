@@ -9,4 +9,4 @@ B) Directly via terminal, using the following instructions:
 2) Open the terminal in the same directory as 'Hello.py' and run the two lines below in order:
 3) pip install -r requirements.txt
 4) streamlit run Hello.py --server.enableCORS false --server.enableXsrfProtection false
-5) Once the server is running, access the webpage at the following link https://glowing-telegram-pg5rgjp64rj3r9jx.github.dev/ 
+5) Once the server is running, access the webpage at the following link https://glowing-telegram-pg5rgjp64rj3r9jx-8501.app.github.dev/
