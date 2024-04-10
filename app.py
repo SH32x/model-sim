@@ -215,7 +215,7 @@ def plot_simulation_results(simulation_results):
 with st.sidebar:
     #st.title('🔢 Stock Price Dashboard')
     
-    drop_list = st.sidebar.selectbox("SPX", ('Price Depiction', 'Price Prediction'), 0)
+    drop_list = st.sidebar.selectbox("SPX", ('Price Depiction', 'Price Prediction'), 1)
     
     
     
