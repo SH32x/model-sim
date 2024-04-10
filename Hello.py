@@ -224,7 +224,7 @@ try:
         #test
         st.subheader("S&P 500 Time-Series Analysis")
         
-        df_with_stats = calculate_stats(df)
+        df = calculate_stats(df)
         plot_raw_data()
     
     if drop_list == 'Price Prediction':
