@@ -215,7 +215,7 @@ def plot_simulation_results(simulation_results):
 with st.sidebar:
     #st.title('🔢 Stock Price Dashboard')
     
-    drop_list = st.sidebar.selectbox("SPX", ('Price Depiction', 'Price Prediction'), 1)
+    drop_list = st.sidebar.selectbox("SPX", ('Price Depiction', 'Price Prediction'), 0)
     
     
     
@@ -224,7 +224,7 @@ try:
         #test
         st.subheader("S&P 500 Time-Series Analysis")
         
-
+        df_with_stats = calculate_stats(df)
         plot_raw_data()
     
     if drop_list == 'Price Prediction':
@@ -247,6 +247,6 @@ except ConnectionError:
 
 
 
-#if __name__ == "__main__":
-#    run()
+if __name__ == "__main__":
+    df_with_stats = calculate_stats(df)
 
