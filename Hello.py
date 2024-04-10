@@ -164,14 +164,15 @@ def plot_raw_data():
                 ]),
                 pad={"r": 10, "t": 10},
                 showactive=True,
-                x=0.2,
+                x=0.5,
                 xanchor="left",
                 y=1.25,
                 yanchor="top"
             ),
         ]
     )
-    fig.show()
+    #fig.show()
+    st.plotly_chart(fig)
 
 
 # Predicts the prices using a Monte Carlo simulation, adjustable parameters
